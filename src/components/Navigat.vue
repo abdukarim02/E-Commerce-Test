@@ -155,10 +155,12 @@ const searchQuery = ref('');
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 7px 12px 7px 20px;
   background: #f5f5f5;
 }
 .header__search-input {
   padding: 3px 0;
+  background: transparent;
 }
 .header__search-input::-moz-placeholder {
   text-align: center;
