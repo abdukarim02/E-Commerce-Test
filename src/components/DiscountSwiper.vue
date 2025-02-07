@@ -137,8 +137,8 @@ export default {
 .discount__swiper .swiper {
   position: absolute;
   max-width: 1470px;
+  height: 100%;
 }
-
 .discount__navigation {
   position: absolute;
   top: 50%;
@@ -170,5 +170,10 @@ export default {
   .discount__navigation {
     display: none;
   }
+  .discount__swiper .swiper {
+    position: absolute;
+    max-width: 100%;
+    height: 110%;
+}
 }
 </style>
