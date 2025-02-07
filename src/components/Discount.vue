@@ -5,8 +5,6 @@ import DiscountSwiper from "./DiscountSwiper.vue";
 export default {
   components: { DiscountSwiper },
   setup() {
-    const prevBtn = ref(null);
-    const nextBtn = ref(null);
     const timeLeft = ref({
       Days: "07",
       Hours: "23",
@@ -19,46 +17,43 @@ export default {
     const startCountdown = () => {
       countdownInterval = setInterval(() => {
         let { Days, Hours, Minutes, Seconds } = timeLeft.value;
-        Days = parseInt(Days);
-        Hours = parseInt(Hours);
-        Minutes = parseInt(Minutes);
-        Seconds = parseInt(Seconds);
+
+        Days = Number(Days);
+        Hours = Number(Hours);
+        Minutes = Number(Minutes);
+        Seconds = Number(Seconds);
 
         if (Seconds > 0) {
           Seconds--;
-        } else {
+        } else if (Minutes > 0) {
           Seconds = 59;
-          if (Minutes > 0) {
-            Minutes--;
-          } else {
-            Minutes = 59;
-            if (Hours > 0) {
-              Hours--;
-            } else {
-              Hours = 23;
-              if (Days > 0) {
-                Days--;
-              } else {
-                clearInterval(countdownInterval);
-              }
-            }
-          }
+          Minutes--;
+        } else if (Hours > 0) {
+          Seconds = 59;
+          Minutes = 59;
+          Hours--;
+        } else if (Days > 0) {
+          Seconds = 59;
+          Minutes = 59;
+          Hours = 23;
+          Days--;
+        } else {
+          clearInterval(countdownInterval);
+          return;
         }
 
         timeLeft.value = {
-          Days: Days.toString().padStart(2, "0"),
-          Hours: Hours.toString().padStart(2, "0"),
-          Minutes: Minutes.toString().padStart(2, "0"),
-          Seconds: Seconds.toString().padStart(2, "0"),
+          Days: String(Days).padStart(2, "0"),
+          Hours: String(Hours).padStart(2, "0"),
+          Minutes: String(Minutes).padStart(2, "0"),
+          Seconds: String(Seconds).padStart(2, "0"),
         };
       }, 1000);
     };
 
     onMounted(() => {
       startCountdown();
-      console.log("Swiper navigation elements initialized:", prevBtn.value, nextBtn.value);
     });
-    return { prevBtn, nextBtn, timeLeft };
 
     onUnmounted(() => {
       clearInterval(countdownInterval);
@@ -68,8 +63,9 @@ export default {
   },
 };
 </script>
+
 <template>
- <section class="discount">
+  <section class="discount">
     <div class="discount__content">
       <div class="container">
         <div class="discount__content-body">
@@ -88,127 +84,92 @@ export default {
             </div>
           </div>
         </div>
-
-        <div class="discount__navigation">
-          <button class="swiper-button-prev" ref="prevBtn">
-            <svg
-              width="19"
-              height="16"
-              viewBox="0 0 19 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.5 8H18M18 8L11 1M18 8L11 15"
-                stroke="black"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-          <button class="swiper-button-next" ref="nextBtn">
-            <svg
-              width="18"
-              height="16"
-              viewBox="0 0 18 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 1L1 8L8 15M1 8H17"
-                stroke="black"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <DiscountSwiper :prevEl="prevBtn" :nextEl="nextBtn" />
+        <DiscountSwiper />
       </div>
+
     </div>
   </section>
 </template>
+
 <style>
 .discount {
-    overflow: hidden;
-    margin: 140px 0;
+  overflow: hidden;
+  margin: 140px 0;
 }
 .discount__content .container::after {
-    content: '';
-    width: 100%;
-    height: 100%;
-    display: block;
-    padding-bottom: 60px; 
-    border-bottom: 1px solid #000;
-    opacity: 0.5;
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: block;
+  padding-bottom: 60px;
+  border-bottom: 1px solid #000;
+  opacity: 0.5;
 }
 .discount__content .container {
-    position: relative;
+  position: relative;
 }
 .discount__navigation {
-    position: absolute;
-    right: 5%;
-    top: 10%;
-    transform: translateY(-50%);
+  width: 100px;
+  position: absolute;
+  right: 5%;
+  top: -10%;
+  transform: translateY(-50%);
+  background: transparent;
 }
 .swiper-button-prev,
 .swiper-button-next {
-    width: 24px;
-    height: 24px;
-} 
+  width: 24px;
+  height: 24px;
+}
 .swiper-button-prev svg,
 .swiper-button-next svg {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
-.swiper-button-prev::after, 
+.swiper-button-prev::after,
 .swiper-button-next::after {
-    display: none;
+  display: none;
 }
 .discount__content-body {
-    width: 600px;
-    height: 103px;
-    display: flex;
-    align-items: end;
-    justify-content: space-between;  
-    margin-bottom: 40px;
+  width: 600px;
+  height: 103px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 40px;
 }
-.discount__body-watch{
-    width: 302px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
+.discount__body-watch {
+  width: 302px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .discount__watch-numbers {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
 }
 .discount__numbers-name {
-    font-family: "Poppins", sans-serif;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 1.5;
-    color: #000;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #000;
 }
 .discount__watch-numbers span {
-    font-weight: 700;
-    font-size: 32px;
-    line-height: 0.9375;
-    letter-spacing: 0.04em;
-    color: #000;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 0.9375;
+  letter-spacing: 0.04em;
+  color: #000;
 }
 .discount__content-body {
-    height: 100%;
-    align-items: start ;
-    flex-direction: column;
-    gap: 25px;
-  }
+  height: 100%;
+  align-items: start;
+  flex-direction: column;
+  gap: 25px;
+}
 </style>
